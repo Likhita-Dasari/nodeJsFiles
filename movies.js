@@ -1,10 +1,12 @@
 const express = require('express')
 const app = express()
 app.use(express.json())
+app.use(express.urlencoded({extended: true}))
 const path = require('path')
 const {open} = require('sqlite')
 const sqlite3 = require('sqlite3')
 const dbPath = path.join(__dirname, 'moviesData.db')
+const http = require('http')
 let db = null
 const initializeTheServer = async () => {
   try {
@@ -27,7 +29,7 @@ const convertToCamelCase = movie_id => {
   }
 }
 //API GET METHOD
-app.get('/movies/', async (request, response) => {
+/*app.get('/movies/', async (request, response) => {
   let databaseCommand = `SELECT movie_name FROM 
         movie`
   const movieNameArray = await db.all(databaseCommand)
@@ -36,5 +38,18 @@ app.get('/movies/', async (request, response) => {
       convertToCamelCase(eachName.movie_id)
     }),
   )
+})*/
+app.get('/movies/', async (request, response) => {
+  const getMoviesQuery = `
+    SELECT
+      movie_name
+    FROM
+      movie;`
+  const moviesArray = await db.all(getMoviesQuery)
+  response.send(
+    moviesArray.map(eachMovie => ({movieName: eachMovie.movie_name})),
+  )
 })
+
+
 module.exports = app
