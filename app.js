@@ -1,9 +1,9 @@
 const express = require('express')
-const app = express();
-app.use(express.json());
+const app = express()
+app.use(express.json())
 const path = require('path')
 const sqlite3 = require('sqlite3')
-const dbPath = path.join(__dirname, 'circketTeam.db')
+const dbPath = path.join(__dirname, 'cricketTeam.db')
 const {open} = require('sqlite')
 let db = null
 //database and server connection
@@ -21,7 +21,7 @@ const initialiseDatabase = async () => {
     process.exit(1)
   }
 }
-initialiseDatabase();
+initialiseDatabase()
 const convertDbObjectTOCamelcase = dbObject => {
   return {
     playerId: dbObject.player_id,
@@ -40,10 +40,11 @@ app.get('/players/', async (request, response) => {
       convertDbObjectTOCamelcase(eachPlayer)
     }),
   )
+  console.log(playersList)
 })
 //API POST METHOD
 app.post('/players/', async (request, response) => {
-  let {playerName, jerseyNumber, role} = request.body
+  let {playerName, jerseyNumber, role} = request.body()
   let databaseCommand = `INSERT INTO circket_team 
     (player_name,jersey_number,role)
     VALUES (${playerName},${jerseyNumber},${role});`
@@ -52,20 +53,20 @@ app.post('/players/', async (request, response) => {
 })
 //API GET METHOD
 app.get('/players/:playerId', async (request, response) => {
-  const playerId = request.params
+  const playerId = request.params()
   let databaseCommand = `SELECT * FROM 
     cricket_team WHERE player_id = ${playerId};`
   let playerDetails = await db.get(databaseCommand)
   response.send(
     playerDetails.map(eachPlayer => {
-      convertDbObjectTOCamelcase(eachPlayer)
+      return convertDbObjectTOCamelcase(eachPlayer)
     }),
   )
 })
 //API PUT METHOD
 app.put('/players/:playerId', async (request, response) => {
-  let playerId = request.params
-  let {playerName, jerseyNumber, role} = request.body
+  let playerId = request.params()
+  let {playerName, jerseyNumber, role} = request.body()
   let databaseCommand = `UPDATE cricket_team 
     SET player_name = ${playerName},jersey_number=${jerseyNumber},role = ${role}
     WHERE player_id = ${playerId};`
@@ -75,7 +76,7 @@ app.put('/players/:playerId', async (request, response) => {
 
 //API DELETE METHOD
 app.delete('/players/:playerId', async (request, response) => {
-  let playerId = request.params
+  let playerId = request.params()
   let databaseCommand = `DELETE  FROM cricket_team 
   WHERE player_id = ${playerId};
   `
