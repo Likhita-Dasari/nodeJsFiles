@@ -28,8 +28,8 @@ const convertToCamelCase = movie_id => {
     movieName: movie_id,
   }
 }
-//API GET METHOD
-/*app.get('/movies/', async (request, response) => {
+//   API GET METHOD
+/*  app.get('/movies/', async (request, response) => {
   let databaseCommand = `SELECT movie_name FROM 
         movie`
   const movieNameArray = await db.all(databaseCommand)
@@ -38,7 +38,7 @@ const convertToCamelCase = movie_id => {
       convertToCamelCase(eachName.movie_id)
     }),
   )
-})*/
+})  */
 app.get('/movies/', async (request, response) => {
   const getMoviesQuery = `
     SELECT
